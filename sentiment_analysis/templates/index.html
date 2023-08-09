@@ -80,7 +80,7 @@
     .then(response => response.json())
     .then(data => {
       // Display the result from the backend
-      output.innerHTML = `<p>Backend response: ${data.predicted_class}</p>`;
+      output.innerHTML = `<p>Predicted value: ${data.predicted_class}</p>`;
     })
     .catch(error => {
       console.error('Error:', error);
