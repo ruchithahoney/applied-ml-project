@@ -41,10 +41,11 @@ def index(request):
 def predict(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        predicted_value = predict_value(data.get("text"))
-        if predicted_value == 1:
+        predicted_value = list(predict_value(data.get("text")))
+        pred_value = max(set(predicted_value), key = predicted_value.count)
+        if pred_value == 1:
             answer = "POSITIVE"
-        elif predicted_value == 2:
+        elif pred_value == 2:
             answer = "NEUTRAL"
         else:
             answer = "NEGATIVE"
