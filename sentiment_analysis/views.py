@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+import json
 import numpy as np
 import keras
 from tensorflow.keras.preprocessing.text import Tokenizer
@@ -39,8 +40,8 @@ def index(request):
 @csrf_exempt
 def predict(request):
     if request.method == 'POST':
-        text = request.POST.get("text")
-        predicted_value = predict_value(text)
+        data = json.loads(request.body)
+        predicted_value = predict_value(data.get("text"))
         if predicted_value == 1:
             answer = "POSITIVE"
         elif predicted_value == 2:
