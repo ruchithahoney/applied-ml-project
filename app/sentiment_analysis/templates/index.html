@@ -1,42 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CIFAR-10 Image Classifier</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sentiment Analysis</title>
+<style>
+  body {
+    background-color: #c18a8a;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    padding: 50px;
+    margin: 150px auto;
+    width: 500px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  h1 {
+    margin-bottom: 20px;
+    color: #333333;
+  }
+  input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #0056b3;
+  }
+  #output {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+  }
+</style>
 </head>
 <body>
-    <h1>CIFAR-10 Image Classifier</h1>
-    <input type="file" id="imageInput">
-    <button onclick="predictImage()">Predict</button>
-    <div id="predictionResult"></div>
+<div class="container">
+  <h1>Sentiment Analysis</h1>
+  <form id="sample-form">
+    <input type="text" id="input-box" placeholder="Enter text">
+    <button type="button" id="submit-button">Submit</button>
+  </form>
+  <div id="output"></div>
+</div>
+<script>
+  const submitButton = document.getElementById("submit-button");
+  const inputBox = document.getElementById("input-box");
+  const output = document.getElementById("output");
 
-    <script>
-        async function predictImage() {
-            const imageInput = document.getElementById('imageInput');
-            const predictionResult = document.getElementById('predictionResult');
+  submitButton.addEventListener("click", () => {
+    const inputValue = inputBox.value;
 
-            const file = imageInput.files[0];
-            const reader = new FileReader();
-
-            reader.onload = async function (event) {
-                const dataUrl = event.target.result;
-                const response = await fetch('/predict', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: new URLSearchParams({
-                        'data_url': dataUrl
-                    })
-                });
-
-                const result = await response.json();
-                predictionResult.innerHTML = `Predicted class: ${result.predicted_class}`;
-            };
-
-            reader.readAsDataURL(file);
-        }
-    </script>
+    // Make an AJAX call to the backend
+    fetch('/predict', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text: inputValue }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Display the result from the backend
+      output.innerHTML = `<p>Backend response: ${data.predicted_class}</p>`;
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      output.innerHTML = '<p>An error occurred while fetching data from the backend.</p>';
+    });
+  });
+</script>
 </body>
 </html>

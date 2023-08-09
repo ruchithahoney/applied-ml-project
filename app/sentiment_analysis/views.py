@@ -40,4 +40,11 @@ def index(request):
 def predict(request):
     if request.method == 'POST':
         text = request.POST.get("text")
-        return JsonResponse({'predicted_class': predict_value(text)})
+        predicted_value = predict_value(text)
+        if predicted_value == 1:
+            answer = "POSITIVE"
+        elif predicted_value == 2:
+            answer = "NEUTRAL"
+        else:
+            answer = "NEGATIVE"
+        return JsonResponse({'predicted_class': answer})
